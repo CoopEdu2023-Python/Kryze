@@ -1,4 +1,2 @@
-name = "Kryze"
-gender = "boy"
-StuId = 114514
-print("%s\n%s\n%d" % (name,gender,StuId))
+var = 600000
+print("浦发银行", var)
