@@ -1,0 +1,33 @@
+# Project: dll
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+OBJ      = base.o addon.o
+LINKOBJ  = base.o addon.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -L"D:/Download/inv/SDL2-2.28.3/x86_64-w64-mingw32/lib" -L"C:/Users/mc200/AppData/Local/Programs/Python/Python311/libs" -L"C:/Users/mc200/AppData/Local/Programs/Python/Python311/libs" -static-libgcc -lws2_32 -std=c++11 -lSDL2 -shared -lpython3 -g3
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++" -I"D:/Download/inv/SDL2-2.28.3/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/mc200/AppData/Local/Programs/Python/Python311/include"
+BIN      = dll.dll
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
+RM       = rm.exe -f
+DEF      = libdll.def
+STATIC   = libdll.a
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN) $(DEF) $(STATIC)
+
+$(BIN): $(LINKOBJ)
+	$(CPP) -shared $(LINKOBJ) -o $(BIN) $(LIBS) -Wl,--output-def,$(DEF),--out-implib,$(STATIC),--add-stdcall-alias
+
+base.o: base.cpp
+	$(CPP) -c base.cpp -o base.o $(CXXFLAGS)
+
+addon.o: addon.cpp
+	$(CPP) -c addon.cpp -o addon.o $(CXXFLAGS)
