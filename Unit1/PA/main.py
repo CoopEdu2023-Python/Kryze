@@ -17,9 +17,17 @@ def win(list, x ,y):
         return 1
     else:
         return 0
+#判断数字函数
+def isnum(str):
+    if str[0] == '0':
+        return 0
+    for i in str:
+        if i < '0' or i > '9':
+            return 0
+    return 1
 # 开始界面
 print("井字棋")
-# 初始化棋子状态
+# 初始化状态
 ir = 0
 list = [
     [' ', ' ', ' '],
@@ -37,10 +45,15 @@ g = 0
 # 主要部分
 while p[0] > 0 and p[1] > 0:
     print(f"当前积分:\n玩家1 {p[0]}\n玩家2 {p[1]}")
-    g = int(input("请输入一局所需积分:"))
-    if g > p[0] or g > p[1]:
+    g = input("请输入一局所需积分:")
+    if not isnum(g):
         clear_screen()
         print("非法输入,请重试")
+        continue
+    g = int(g)
+    if g > p[0] or g > p[1]:
+        clear_screen()
+        print("积分不足,请重试")
         continue
     while flag == 0:
         clear_screen()
