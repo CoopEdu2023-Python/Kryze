@@ -1,6 +1,13 @@
 import os
 
-
+# 判断是否平局
+def is_stop(data):
+    for i in data:
+        for j in i:
+            if j == ' ':
+                return False
+    else:
+        return True
 # 判断异常情况
 def print_special(situation):
     sit = ["请输入合法数字", "请输入在范围内的位置", "积分不足"]
@@ -164,6 +171,12 @@ def main():
                 player_score[(turns - 1) % 2] += score
                 player_score[turns % 2] -= score
                 print_table(chess_data)
+                input('输入任意键继续')
+                clear_screen()
+                break
+            # 判断平局
+            if is_stop(chess_data):
+                print("平局")
                 input('输入任意键继续')
                 clear_screen()
                 break
