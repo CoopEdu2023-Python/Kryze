@@ -74,6 +74,7 @@ def score_input(player_score):
             # clear_screen()
             score_is_num = False
             print("非法输入,请重试")
+            continue
         else:
             score_is_num = True
         score_start = int(float(score_start))
@@ -81,6 +82,7 @@ def score_input(player_score):
             # clear_screen()
             score_is_enough = False
             print("积分不足,请重试")
+            continue
         else:
             score_is_enough = True
     return score_start
