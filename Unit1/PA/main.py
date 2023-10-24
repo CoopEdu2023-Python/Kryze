@@ -8,6 +8,8 @@ def is_stop(data):
                 return False
     else:
         return True
+
+
 # 判断异常情况
 def print_special(situation):
     sit = ["请输入合法数字", "请输入在范围内的位置", "积分不足"]
@@ -49,12 +51,11 @@ def clear_screen():
 
 # 判断输赢
 def is_win(data, x, y):
-    if data[0][y] == data[1][y] == data[2][y]:
+    if data[0][y] == data[1][y] == data[2][y] != ' ':
         return 1
-    elif data[x][0] == data[x][1] == data[x][2]:
+    elif data[x][0] == data[x][1] == data[x][2] != ' ':
         return 1
-    elif ((data[0][0] == data[1][1] == data[2][2]) or (data[0][2] == data[1][1] == data[2][0])
-          and (not data[1][1] == ' ')):
+    elif (data[0][0] == data[1][1] == data[2][2] != ' ') or (data[0][2] == data[1][1] == data[2][0] != ' ' ):
         return 1
     else:
         return 0
