@@ -1,5 +1,6 @@
 import os
 
+
 # 判断是否平局
 def is_stop(data):
     for i in data:
