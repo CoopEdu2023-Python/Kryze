@@ -4,9 +4,8 @@ import os
 # 判断是否平局
 def is_stop(data):
     for i in data:
-        for j in i:
-            if j == ' ':
-                return False
+        if ' ' in i:
+            return False
     else:
         return True
 
