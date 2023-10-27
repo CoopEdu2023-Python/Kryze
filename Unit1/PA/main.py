@@ -55,7 +55,7 @@ def is_win(data, x, y):
         return 1
     elif data[x][0] == data[x][1] == data[x][2] != ' ':
         return 1
-    elif (data[0][0] == data[1][1] == data[2][2] != ' ') or (data[0][2] == data[1][1] == data[2][0] != ' ' ):
+    elif (data[0][0] == data[1][1] == data[2][2] != ' ') or (data[0][2] == data[1][1] == data[2][0] != ' '):
         return 1
     else:
         return 0
