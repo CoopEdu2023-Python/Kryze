@@ -104,11 +104,9 @@ def input_position():
             if 1 <= int(pos) <= 9:
                 break
             else:
-                clear_screen()
                 print("请输入合法坐标")
                 continue
         else:
-            clear_screen()
             print("请输入数字")
             continue
     return int(pos)
