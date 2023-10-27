@@ -149,15 +149,12 @@ def main():
                 back_y = target_back % 3
                 chess_data[back_x][back_y] = ' '
                 movement[turns % 2].pop(0)
-                clear_screen()
             # 输入目标位置并排除特殊情况
             while True:
-                print_table(chess_data)
                 pos = int(input_position()) - 1
                 pos_x = pos // 3
                 pos_y = pos % 3
                 if chess_data[pos_x][pos_y] != ' ':
-                    clear_screen()
                     print("非法输入")
                     continue
                 else:
