@@ -3,8 +3,8 @@ import os
 
 # 判断是否平局
 def is_stop(data):
-    for i in data:
-        if ' ' in i:
+    for line in data:
+        if ' ' in line:
             return False
     else:
         return True
@@ -118,8 +118,10 @@ def main():
     input()
     clear_screen()
     player_score = [100, 100]
+
     # 主要部分
     while player_score[0] > 0 and player_score[1] > 0:
+
         # 初始化状态
         chess_data = [[' ', ' ', ' '],
                       [' ', ' ', ' '],
@@ -127,17 +129,20 @@ def main():
         movement = [[], []]
         _tp = ['O', 'X']
         turns = 0
+
         # 输出当前玩家积分状态
         print_score(player_score)
         score = score_input(player_score)
         win = 0
         mode = int(input("请输入游戏模式，普通模式1 或者 特殊模式2\n"))
         while win == 0:
+
             # 输出当前选手信息
             clear_screen()
             print_score(player_score)
             print_table(chess_data)
             print(f"现在是{_tp[turns % 2]}\n是第{turns + 1}回合")
+
             # 在7回合之后删除
             if turns >= 6 and mode == 2:
                 print(f"删除第{movement[turns % 2][0] + 1}个棋\n输入任意键继续")
@@ -147,6 +152,7 @@ def main():
                 back_y = target_back % 3
                 chess_data[back_x][back_y] = ' '
                 movement[turns % 2].pop(0)
+
             # 输入目标位置并排除特殊情况
             while True:
                 pos = int(input_position()) - 1
@@ -157,11 +163,14 @@ def main():
                     continue
                 else:
                     break
+
             # 记录步骤
             movement[turns % 2].append(pos)
+
             # 落子
             chess_data[pos_x][pos_y] = _tp[turns % 2]
             turns += 1
+
             # 判断输赢
             win = is_win(chess_data, pos_x, pos_y)
             if win == 1:
@@ -172,17 +181,20 @@ def main():
                 input('输入任意键继续')
                 clear_screen()
                 break
+
             # 判断平局
             if is_stop(chess_data):
                 print("平局")
                 input('输入任意键继续')
                 clear_screen()
                 break
+
         # 判断分数是否足够
         if score_enough(player_score):
             print(f"玩家{score_enough(player_score)}赢了")
             clear_screen()
             break
+
     print("游戏结束")
 
 
