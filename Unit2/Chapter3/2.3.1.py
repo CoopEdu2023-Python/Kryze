@@ -1,0 +1,4 @@
+# "Pythonic" refers to adherence to Python's conventions, emphasizing readability and simplicity. Python lacks strict private attributes/methods, relying on developer discipline. This design choice aligns with the language's philosophy of empowerment over restriction.
+
+
+# The term "Pythonic" is widely used in the Python community and is rooted in PEP 20, "The Zen of Python" (https://www.python.org/dev/peps/pep-0020/), which outlines Python's guiding principles. The absence of strict private attributes is explained in Guido van Rossum's blog post: "The fate of lambda in Python 3000" (https://www.artima.com/weblogs/viewpost.jsp?thread=98196).

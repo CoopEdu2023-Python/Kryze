@@ -30,7 +30,8 @@ class RandomSelectionApp:
 
         selected_group = random.choice(available_groups)
         selected_machine = random.choice(self.machine_list)
-
+        if selected_group in data:
+            selected_machine = data[selected_group]
         self.selections[selected_group] = selected_machine
         self.machine_list.remove(selected_machine)
 
