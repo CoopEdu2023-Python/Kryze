@@ -1,16 +1,20 @@
-list_1 = list()
+def simplify_path(path):
+    stack = []
+    components = path.split('/')
+    for comp in components:
+        if comp == '..':
+            if stack:
+                stack.pop()
+        elif comp and comp != '.':
+            stack.append(comp)
+    result = '/' + '/'.join(stack)
+    return result
 
 
-for i in range(1, -1, -1):
-    list_1.append(str(i))
-
-
-list_2 = '0'.join(list_1)
-print(list_2)
-
-
-list_3 = list_2[:-1:]
-print(list_3)
-
-list_3.replace('0', '1')
-print(list_3)
+# 验证用的代码：
+path1 = "/home/"
+path2 = "/a/./b/../../c/"
+result1 = simplify_path(path1)
+result2 = simplify_path(path2)
+print(result1)  # 输出 "/home"
+print(result2)  # 输出 "/c"
