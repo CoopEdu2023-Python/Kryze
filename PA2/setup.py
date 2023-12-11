@@ -9,6 +9,8 @@ dino_pos = 50
 dino_height = 440
 Jump_rate = 35
 Jump_sound = 'resources/audios/jump.mp3'
+Image_addr_Pterodactyl = ['resources/images/pterodactyl/pterodactyl-1.png',
+                          'resources/images/pterodactyl/pterodactyl-2.png']
 Image_addr_scoreboard = ['resources/images/scoreboard/scoreboard-0.png',
                          'resources/images/scoreboard/scoreboard-1.png',
                          'resources/images/scoreboard/scoreboard-2.png',

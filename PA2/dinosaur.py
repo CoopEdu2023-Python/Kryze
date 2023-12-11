@@ -5,8 +5,8 @@ import setup
 class Dino(pygame.sprite.Sprite):
 
     def calculate_jump_height_per_frame(self, frame_count, frame_time_interval):
-        velocity_start = 17
-        g = 50
+        velocity_start = 12
+        g = 25
         jump_heights = []
         for frame in range(1, frame_count + 1):
             total_time = frame * frame_time_interval
