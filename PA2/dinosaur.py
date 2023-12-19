@@ -38,7 +38,7 @@ class Dino(pygame.sprite.Sprite):
         self.jump_time = 0
         self.mask = None
         self.jump_height = self.calculate_jump_height_per_frame(setup.FPS_limit, 2 / setup.FPS_limit)
-        print(self.jump_height)
+        # print(self.jump_height)
 
     def load(self):
         for addr in self.image_addr_list_run:
@@ -58,36 +58,31 @@ class Dino(pygame.sprite.Sprite):
         self.state = "die"
         self.refresh_time = 0
         self.image_id = 0
-        self.image_current_list.clear()
-        self.image_current_list.extend(self.image_die_list)
+        self.image_current_list = self.image_die_list
 
     def run(self):
         self.state = "run"
         self.refresh_time = 0
         self.image_id = 0
-        self.image_current_list.clear()
-        self.image_current_list.extend(self.image_run_list)
+        self.image_current_list = self.image_run_list
 
     def duck(self):
         self.state = "duck"
         self.refresh_time = 0
         self.image_id = 0
-        self.image_current_list.clear()
-        self.image_current_list.extend(self.image_duck_list)
+        self.image_current_list = self.image_duck_list
 
     def dash(self):
         self.state = "dash"
         self.refresh_time = 0
-        self.image_current_list.clear()
-        self.image_current_list.extend(self.image_run_list)
+        self.image_current_list = self.image_run_list
 
     def jump(self):
         pygame.mixer.Sound(setup.Jump_sound).play()
         self.refresh_time = 0
         self.state = "jump"
         self.image_id = 0
-        self.image_current_list.clear()
-        self.image_current_list.extend(self.image_jump_list)
+        self.image_current_list = self.image_jump_list
 
     def switch_image(self):
         if self.image_id == len(self.image_current_list):
@@ -97,7 +92,7 @@ class Dino(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image_current)
 
     def update(self):
-        if self.state == 'run' or 'duck':
+        if self.state in ('duck', 'run'):
             if self.refresh_time == self.refresh_rate:
                 self.switch_image()
                 self.refresh_time = 0
@@ -119,6 +114,9 @@ class Dino(pygame.sprite.Sprite):
                 self.run()
                 self.rect.left = setup.dino_pos
                 self.jump_time = 0
+
+    def get_rect(self):
+        return self.rect
 
     def draw(self, background):
         background.blit(self.image_current, self.rect)

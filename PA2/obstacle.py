@@ -48,12 +48,20 @@ class Cactus(pygame.sprite.Sprite):
             if self.jump_time == len(self.jump_height) // 2:
                 self.state = 'normal'
                 self.jump_time = 0
+        if self.state == 'destroy':
+            self.rect.bottom -= self.jump_height[self.jump_time]
+            self.jump_time += 1
+            if self.jump_time == len(self.jump_height) // 2:
+                self.kill()
 
     def knock(self):
         self.state = "knocked"
 
     def knock_up(self):
         self.state = 'knocked_up'
+
+    def destroy(self):
+        self.state = 'destroy'
 
     def draw(self, background):
         background.blit(self.image, self.rect)
@@ -104,6 +112,9 @@ class Pterodactyl(pygame.sprite.Sprite):
     def knock_up(self):
         self.state = 'knocked_up'
 
+    def destroy(self):
+        self.state = 'destroy'
+
     def update(self):
         if self.refresh_time == self.refresh_rate:
             self.switch_image()
@@ -111,7 +122,7 @@ class Pterodactyl(pygame.sprite.Sprite):
         else:
             self.refresh_time += 1
         if self.state == 'normal':
-            self.rect.left -= setup.Going_speed * 1.5
+            self.rect.left -= setup.Going_speed * 1.2
             if self.rect.right < 0:
                 self.kill()
         if self.state in ('knocked_up', 'knocked'):
@@ -120,6 +131,11 @@ class Pterodactyl(pygame.sprite.Sprite):
             if self.jump_time == len(self.jump_height) // 2:
                 self.state = 'normal'
                 self.jump_time = 0
+        if self.state == 'destroy':
+            self.rect.left += self.jump_height[self.jump_time]
+            self.jump_time += 1
+            if self.jump_time == len(self.jump_height) // 2:
+                self.kill()
 
 
     def draw(self, background):

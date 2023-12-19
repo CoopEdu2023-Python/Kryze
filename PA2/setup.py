@@ -3,6 +3,8 @@ Going_speed = 5
 # about background
 Image_addr_background = 'resources/images/ground/ground.png'
 Image_addr_laser = 'resources/images/weapon/laser.png'
+Image_addr_beam = 'resources/images/weapon/beam.png'
+Image_addr_shield = 'resources/images/weapon/shield.png'
 Ground_height = 450
 # about dino
 dino_pos = 50
