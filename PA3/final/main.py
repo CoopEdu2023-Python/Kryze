@@ -69,28 +69,72 @@ bvids = []
 aids = []
 comments = []
 titles = []
+count_all = 0
+current_sum = 0
 while not scan_all:
     python_script_path = "magic.py"
     arg = [user.uid, str(i)]
     out = subprocess.run(["python", python_script_path] + arg, capture_output=True, text=True, encoding="utf-8")
-    time.sleep(0.5)
     raw_data = str(out.stdout)
-    count_all = int(re.findall("'count': ([0-9]+),", raw_data)[0])
-    if i * 30 >= count_all:
-        scan_all = True
+    count_all = 0
+    try:
+        for sub_count in re.findall("'count': ([0-9]+),", raw_data):
+            count_all += int(sub_count)
+    except:
+        break
     bvids.extend(re.findall("'bvid': '([0-9a-zA-Z]+)',", raw_data))
     aids.extend(re.findall("'aid': ([0-9]+),", raw_data))
     comments.extend(re.findall("'comment': ([0-9]+),", raw_data))
-    titles.extend(re.findall(r"'title': '(.*?)'", raw_data))
+    titles.extend(re.findall(r"'title': '(.*?)', 'review'", raw_data))
+    current_sum += len(re.findall("'bvid': '([0-9a-zA-Z]+)',", raw_data))
+    if current_sum >= count_all:
+        break
     i += 1
     time.sleep(0.5)
 
 videos = []
-for i in range(0, ):
+for i in range(0, count_all):
     current = data_struct.Video_data()
     current.title = titles[i]
     current.bvid = bvids[i]
     current.aid = aids[i]
     current.comments_num = comments[i]
+    videos.append(current)
 
-print(user)
+
+for video in videos:
+    params = setup.Params_reply
+    params['oid'] = video.aid
+    web_spider.target_url = setup.reply_api
+    web_spider.params = params
+    finish_tag = False
+    current_sum = 0
+    pre_sum = -1
+    page = 1
+    while (not finish_tag) and (pre_sum != current_sum):
+        web_spider.params['pn'] = page
+        pre_sum = current_sum
+        comment_list = web_spider.get_page().json()
+        sum = int(comment_list['data']['page']['count'])
+        for comment in comment_list['data']['replies']:
+            _ = dict()
+            _['message'] = comment['content']['message']
+            current_sum += 1
+            _['replies'] = []
+            for reply in comment['replies']:
+                _['replies'].append(reply['content']['message'])
+                current_sum += 1
+            video.reply_data.append(_)
+            if current_sum >= sum:
+                finish_tag = True
+                break
+        page += 1
+
+with open(f"output/report_{user.name}.txt", "w", encoding="utf-8") as report:
+    report.write(user.__str__())
+
+with open(f"output/report_{user.name}.txt", "a", encoding="utf-8") as report:
+    for video in videos:
+        report.write(video.__str__())
+
+

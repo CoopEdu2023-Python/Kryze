@@ -22,9 +22,15 @@ Params_data_state = {
 Params_find_video = {
         'mid': str(),
         'pn' : str(),
+        'tid': 0,
         'ps': '30',
         'keyword': "",
         'order': "pubdate"
+}
+
+Params_reply = {
+    'type': 1,
+    'oid': str()
 }
 Following_state_api = 'https://api.bilibili.com/x/relation/stat'
 Like_state_api = 'https://api.bilibili.com/x/space/upstat'
@@ -32,4 +38,5 @@ Decode_key_get_api = 'https://api.bilibili.com/x/web-interface/nav'
 Search_api = 'https://search.bilibili.com/upuser?'
 Account_data_api = 'https://api.bilibili.com/x/space/wbi/acc/info'
 Video_all_api = 'https://api.bilibili.com/x/space/wbi/arc/search?'
-Keywords = 'HIKARI-FIELD'
+reply_api = 'https://api.bilibili.com/x/v2/reply'
+Keywords = '墨轩寄了'

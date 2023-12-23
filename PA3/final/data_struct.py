@@ -17,7 +17,7 @@ class Account:
     def __str__(self):
         return (f"账号名: {self.name}   账号id: {self.uid}    {self.level}级      硬币数: {self.coins}\n粉丝数: {self.fans}"
                 f"     关注账号数: {self.following}\n"
-                f"投稿视频数: {self.video}   投稿文章数: {self.article}       获赞数: {self.likes}")
+                f"播放视频数: {self.video}   投稿文章数: {self.article}       获赞数: {self.likes}\n\n")
 
 
 class Video_data:
@@ -26,3 +26,10 @@ class Video_data:
         self.bvid = str()
         self.title = str()
         self.comments_num = int()
+        self.reply_data = []
+
+    def __str__(self):
+        res = json.dumps(self.reply_data, indent=2, ensure_ascii=False)
+        final = '\n'.join(line for line in res.splitlines())
+        return (f"标题: {self.title}   评论数量: {self.comments_num}\n"
+                f"评论数据\n{final}\n")

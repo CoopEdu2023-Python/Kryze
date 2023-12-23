@@ -18,3 +18,4 @@ def web_rid(param):
 
 url = 'https://api.bilibili.com/x/web-interface/nav'
 raw = requests.get(url=url, headers=setup.Headers).json()
+print(raw)
