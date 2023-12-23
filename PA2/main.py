@@ -100,7 +100,7 @@ while running:
             shield.inactive()
 
     screen.fill("White")
-
+    back_ground.score = 20000
     # fill the screen with a color to wipe away anything from last frame
     back_ground.update()
     dino.update()
