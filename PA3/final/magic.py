@@ -18,4 +18,8 @@ params['w_rid'] = passwd[0]
 params['wts'] = passwd[1]
 web_spider.params = params
 video_raw = web_spider.get_page().json()
-print(video_raw)
+for video in video_raw['data']['list']['vlist']:
+    print("title:", video['title'])
+    print('comments:', video['comment'])
+    print('bvid:', video['bvid'])
+    print('aid:', video['aid'])

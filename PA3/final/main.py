@@ -11,10 +11,13 @@ import subprocess
 import random
 
 # 初始化
+print("开始初始化爬虫")
 web_spider = spider.Spider()
 user = data_struct.Account()
+print("done!")
 
 # 获取指定账户名称的uid
+print("获取账户uid")
 params = setup.Params_get_user
 params['keyword'] = setup.Keywords
 user.name = setup.Keywords
@@ -27,8 +30,10 @@ with open("cache/search_result.html", "w", encoding="utf-8") as file:
 
 soup = BeautifulSoup(search_page, "html.parser")
 user.uid = re.findall("//space.bilibili.com/([0-9]+)", soup.select_one("a", class_='mr_md').get("href"))[0]
+print("done!")
 
 # 获取粉丝和关注数量
+print("获取账户信息")
 params = setup.Params_follow_state
 params['vmid'] = user.uid
 web_spider.params = params
@@ -61,8 +66,10 @@ with open("cache/account_data.json", "w", encoding="utf-8") as file:
 user.private_data = account_data.json()
 user.coins = user.private_data['data']['coins']
 user.level = user.private_data['data']['level']
+print("done!")
 
 # 获取账号下所有的视频
+print("获取账号下的视频")
 scan_all = False
 i = 1
 bvids = []
@@ -74,35 +81,31 @@ current_sum = 0
 while not scan_all:
     python_script_path = "magic.py"
     arg = [user.uid, str(i)]
-    out = subprocess.run(["python", python_script_path] + arg, capture_output=True, text=True, encoding="utf-8")
-    raw_data = str(out.stdout)
-    count_all = 0
-    try:
-        for sub_count in re.findall("'count': ([0-9]+),", raw_data):
-            count_all += int(sub_count)
-    except:
+    out = subprocess.run(["python", python_script_path] + arg, capture_output=True, text=True, encoding="utf-8").stdout
+    if len(out) == 0:
         break
-    bvids.extend(re.findall("'bvid': '([0-9a-zA-Z]+)',", raw_data))
-    aids.extend(re.findall("'aid': ([0-9]+),", raw_data))
-    comments.extend(re.findall("'comment': ([0-9]+),", raw_data))
-    titles.extend(re.findall(r"'title': '(.*?)', 'review'", raw_data))
-    current_sum += len(re.findall("'bvid': '([0-9a-zA-Z]+)',", raw_data))
-    if current_sum >= count_all:
-        break
+    bvids.extend(re.findall("bvid: ([0-9a-zA-Z]+)", out))
+    aids.extend(re.findall("aid: ([0-9a-zA-Z]+)", out))
+    titles.extend(re.findall("title: (.+)", out))
+    comments.extend(re.findall("comments: ([0-9a-zA-Z]+)", out))
     i += 1
-    time.sleep(0.5)
+    time.sleep(0.3)
 
 videos = []
-for i in range(0, count_all):
+for i in range(0, len(bvids)):
     current = data_struct.Video_data()
     current.title = titles[i]
     current.bvid = bvids[i]
     current.aid = aids[i]
     current.comments_num = comments[i]
     videos.append(current)
+print("done!")
 
 
+print("获取评论区数据")
+process = 0
 for video in videos:
+    print(f"{process} / {len(videos)}")
     params = setup.Params_reply
     params['oid'] = video.aid
     web_spider.target_url = setup.reply_api
@@ -129,12 +132,17 @@ for video in videos:
                 finish_tag = True
                 break
         page += 1
+        time.sleep(0.3)
+    process += 1
+print("done")
 
+print("正在生成报告")
 with open(f"output/report_{user.name}.txt", "w", encoding="utf-8") as report:
     report.write(user.__str__())
 
 with open(f"output/report_{user.name}.txt", "a", encoding="utf-8") as report:
     for video in videos:
         report.write(video.__str__())
+print("done")
 
 

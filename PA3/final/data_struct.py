@@ -17,7 +17,7 @@ class Account:
     def __str__(self):
         return (f"账号名: {self.name}   账号id: {self.uid}    {self.level}级      硬币数: {self.coins}\n粉丝数: {self.fans}"
                 f"     关注账号数: {self.following}\n"
-                f"播放视频数: {self.video}   投稿文章数: {self.article}       获赞数: {self.likes}\n\n")
+                f"视频播放量: {self.video}   文章浏览量: {self.article}       获赞数: {self.likes}\n\n")
 
 
 class Video_data:
