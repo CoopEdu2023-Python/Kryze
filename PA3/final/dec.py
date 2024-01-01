@@ -15,6 +15,8 @@ def web_rid(param):
     param["wts"] = s
     param = "&".join([f"{i[0]}={i[1]}" for i in sorted(param.items(), key=lambda x: x[0])])
     return hashlib.md5((param + c).encode(encoding='utf-8')).hexdigest(), s
+
+
 if __name__ == "__main__":
     url = 'https://api.bilibili.com/x/web-interface/nav'
     raw = requests.get(url=url, headers=setup.Headers).json()

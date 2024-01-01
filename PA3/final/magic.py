@@ -23,3 +23,4 @@ for video in video_raw['data']['list']['vlist']:
     print('comments:', video['comment'])
     print('bvid:', video['bvid'])
     print('aid:', video['aid'])
+    print('play:', video['play'])

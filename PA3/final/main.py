@@ -8,6 +8,7 @@ import spider
 import data_struct
 import setup
 import subprocess
+import data_process
 import random
 
 # 初始化
@@ -30,8 +31,8 @@ with open("cache/search_result.html", "w", encoding="utf-8") as file:
 
 soup = BeautifulSoup(search_page, "html.parser")
 user.uid = re.findall("//space.bilibili.com/([0-9]+)", soup.select_one("a", class_='mr_md').get("href"))[0]
+print(user.uid)
 print("done!")
-
 # 获取粉丝和关注数量
 print("获取账户信息")
 params = setup.Params_follow_state
@@ -66,6 +67,7 @@ with open("cache/account_data.json", "w", encoding="utf-8") as file:
 user.private_data = account_data.json()
 user.coins = user.private_data['data']['coins']
 user.level = user.private_data['data']['level']
+user.generate_json()
 print("done!")
 
 # 获取账号下所有的视频
@@ -76,27 +78,45 @@ bvids = []
 aids = []
 comments = []
 titles = []
+play = []
 count_all = 0
 current_sum = 0
 while not scan_all:
     python_script_path = "magic.py"
     arg = [user.uid, str(i)]
-    out = subprocess.run(["python", python_script_path] + arg, capture_output=True, text=True, encoding="utf-8").stdout
+    out = subprocess.run([f"{setup.Python_path}", python_script_path] + arg, capture_output=True, text=True, encoding="utf-8").stdout
     if len(out) == 0:
         break
     bvids.extend(re.findall("bvid: ([0-9a-zA-Z]+)", out))
     aids.extend(re.findall("aid: ([0-9a-zA-Z]+)", out))
     titles.extend(re.findall("title: (.+)", out))
     comments.extend(re.findall("comments: ([0-9a-zA-Z]+)", out))
+    play.extend(re.findall("play: ([0-9a-zA-Z]+)", out))
     i += 1
+    print(i)
     time.sleep(0.3)
 
+proc = 0
 videos = []
 for i in range(0, len(bvids)):
     current = data_struct.Video_data()
+    print(f"{proc} / {len(bvids)}")
+    # 获取视频状态数据
+    params = setup.Params_video_state
+    params['bvid'] = bvids[i]
+    web_spider.params = params
+    web_spider.target_url = setup.Video_state_api
+    state = web_spider.get_page().json()
+    current.coins = state['data']['stat']['coin']
+    current.like = state['data']['stat']['like']
+    current.share = state['data']['stat']['share']
+    proc += 1
+
+    # 上传状态
     current.title = titles[i]
     current.bvid = bvids[i]
     current.aid = aids[i]
+    current.play_num = play[i]
     current.comments_num = comments[i]
     videos.append(current)
 print("done!")
@@ -134,6 +154,7 @@ for video in videos:
         page += 1
         time.sleep(0.3)
     process += 1
+    video.generate_json()
 print("done")
 
 print("正在生成报告")
@@ -143,6 +164,11 @@ with open(f"output/report_{user.name}.txt", "w", encoding="utf-8") as report:
 with open(f"output/report_{user.name}.txt", "a", encoding="utf-8") as report:
     for video in videos:
         report.write(video.__str__())
+print("done")
+
+print("正在生成数据文件")
+user.json_output['video_list'] = bvids
+data_process.generate_xlsx(user.json_output, videos)
 print("done")
 
 
