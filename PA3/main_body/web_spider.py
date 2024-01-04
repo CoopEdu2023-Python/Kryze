@@ -9,6 +9,8 @@ import data_struct
 import setup
 import subprocess
 import data_process
+import csv
+import csv_generate
 import random
 
 # 初始化
@@ -124,37 +126,72 @@ print("done!")
 
 print("获取评论区数据")
 process = 0
+contents = list
+with open(f'output/{setup.Keywords}/user_data.csv', 'w', newline='', encoding='utf-8') as file:
+    pass  # 不做任何写入操作
+with open(f'output/{setup.Keywords}/video_data.csv', 'w', newline='', encoding='utf-8') as file:
+    pass  # 不做任何写入操作
+with open(f'output/{setup.Keywords}/reply_data.csv', 'w', newline='', encoding='utf-8') as file:
+    pass  # 不做任何写入操作
 for video in videos:
-    print(f"{process} / {len(videos)}")
-    params = setup.Params_reply
-    params['oid'] = video.aid
-    web_spider.target_url = setup.reply_api
-    web_spider.params = params
-    finish_tag = False
-    current_sum = 0
-    pre_sum = -1
-    page = 1
-    while (not finish_tag) and (pre_sum != current_sum):
-        web_spider.params['pn'] = page
-        pre_sum = current_sum
-        comment_list = web_spider.get_page().json()
-        sum = int(comment_list['data']['page']['count'])
-        for comment in comment_list['data']['replies']:
-            _ = dict()
-            _['message'] = comment['content']['message']
-            current_sum += 1
-            _['replies'] = []
-            for reply in comment['replies']:
-                _['replies'].append(reply['content']['message'])
-                current_sum += 1
-            video.reply_data.append(_)
-            if current_sum >= sum:
-                finish_tag = True
-                break
-        page += 1
-        time.sleep(0.3)
-    process += 1
+    print(f"视频进度: {process} / {len(videos)}")
+    finish = False
+    i = 1
+    num = 0
+    while not finish and count_all >= num:
+        python_script_path = "get_comment.py"
+        arg = [video.aid, str(i)]
+        out = subprocess.run([f"{setup.Python_path}", python_script_path] + arg, capture_output=True, text=True,
+                             encoding="utf-8").stdout
+        count_all = int(re.findall("count: ([0-9a-zA-Z]+)", out)[0])
+        print(f"评论进度: {num} / {count_all}")
+        lines = out.strip().split('\n')
+        # 解析数据
+        data = []
+        temp_dict = {}
+        current_key = None
+        for line in lines:
+            if line.startswith('content: '):  # 开始一个新的字典
+                if temp_dict:
+                    data.append(temp_dict)
+                    temp_dict = {}
+                current_key = 'content'
+                temp_dict[current_key] = line[len('content: '):].strip()
+            elif any(line.startswith(key + ': ') for key in
+                     ["like", "cid", "ctime", "mid", "uname", "is_up_like", "ip"]):
+                current_key = line.split(':', 1)[0]
+                temp_dict[current_key] = line.split(':', 1)[1].strip()
+            elif current_key == 'content':  # content字段中的换行
+                temp_dict[current_key] += ' ' + line.strip()
+            elif line.strip() == '...':  # 数据块的分隔
+                continue
+        # 添加最后一个字典
+        if temp_dict:
+            data.append(temp_dict)
+        num += len(re.findall("content", out))
+
+        # CSV文件的头部（列名）
+        headers = ["content", "like", "cid", "ctime", "mid", "uname", "is_up_like", "ip", "up_name", "aid", "up_name"]
+
+        # 写入数据到CSV
+        with open(f'output/{setup.Keywords}/reply_data.csv', 'a', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=headers)
+            # 如果文件是新的，写入头部
+            if file.tell() == 0:
+                writer.writeheader()
+            for row in data:
+                # 转换布尔值和整数
+                row['like'] = int(row['like'])
+                row['cid'] = int(row['cid'])
+                row['ctime'] = int(row['ctime'])
+                row['mid'] = int(row['mid'])
+                row['is_up_like'] = row['is_up_like'] == 'True'
+                row['aid'] = video.aid
+                row['up_name'] = setup.Keywords
+                writer.writerow(row)
+        i += 1
     video.generate_json()
+    process += 1
 print("done")
 
 print("正在生成报告")
@@ -169,6 +206,5 @@ print("done")
 print("正在生成数据文件")
 user.json_output['video_list'] = bvids
 data_process.generate_xlsx(user.json_output, videos)
+csv_generate.to_csv(setup.Keywords)
 print("done")
-
-
